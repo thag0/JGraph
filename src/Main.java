@@ -11,17 +11,18 @@ public class Main {
 	}
 
     public static void main(String[] args) {
-        int n = 400;
+        int n = 2000;
 		double[] x = new double[n];
         double[] y = new double[n];
 
         for (int i = 0; i < n; i++) {
-            x[i] = i + 1;
-            y[i] = Math.sin(x[i]/8);
+            x[i] = (i + 1) / 10;
+            y[i] = Math.tanh(x[i]);
         }
 
-        PlotFrame pf = new PlotFrame(1200, 400);
-        pf.plot(x, y, Color.red);
+        PlotFrame pf = new PlotFrame(800, 600);
+        pf.plot(x, y, Color.red, "Tanh");
+		pf.view();
 	}
 
     /**

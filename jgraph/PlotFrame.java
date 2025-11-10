@@ -17,16 +17,12 @@ public class PlotFrame extends JFrame {
         add(pp);
     }
 
-    public void plot(double[] x, double[] y, Color cor) {
-        pp.x = x;
-        pp.y = y;
-        pp.corBase = cor;
-
+    public void view() {
         setVisible(true);
     }
 
-    public void plot(double[] x, double[] y) {
-        plot(x, y, pp.corBase);
+    public void plot(double[] x, double[] y, Color color, String title) {
+        pp.addPlot(x, y, color, title);
     }
 
 }
