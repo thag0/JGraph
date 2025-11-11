@@ -25,4 +25,12 @@ public class PlotFrame extends JFrame {
         pp.addPlot(x, y, color, title);
     }
 
+    public void plot(double[] x, double[] y, Color color) {
+        pp.addPlot(x, y, color);
+    }
+
+    public void plot(double[] x, double[] y) {
+        pp.addPlot(x, y);
+    }
+
 }

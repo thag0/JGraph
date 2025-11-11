@@ -14,7 +14,9 @@ public class PlotPanel extends JPanel {
     private ArrayList<Serie> series = new ArrayList<>();
     private int margin = 40;
     private Color corTracejado = Color.darkGray;
-    private Color corBackground = new Color(200, 200, 200);
+    private Color corBackground = new Color(180, 180, 180);
+
+    private ColorIterator ci = new ColorIterator();
 
     public PlotPanel(int w, int h) {
         setBackground(corBackground);
@@ -24,6 +26,14 @@ public class PlotPanel extends JPanel {
     public void addPlot(double[] x, double[] y, Color cor, String nome) {
         series.add(new Serie(x, y, cor, nome));
         repaint();
+    }
+
+    public void addPlot(double[] x, double[] y, Color cor) {
+        series.add(new Serie(x, y, cor, "Serie-" + series.size()));
+    }
+
+    public void addPlot(double[] x, double[] y) {
+        addPlot(x, y, ci.next());
     }
 
     @Override

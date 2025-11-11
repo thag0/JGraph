@@ -1,7 +1,5 @@
 package src;
 
-import java.awt.Color;
-
 import jgraph.PlotFrame;
 
 public class Main {
@@ -11,18 +9,37 @@ public class Main {
 	}
 
     public static void main(String[] args) {
-        int n = 2000;
-		double[] x = new double[n];
+        int n = 200;
+        double[] x = new double[n];
         double[] y = new double[n];
 
         for (int i = 0; i < n; i++) {
-            x[i] = (i + 1) / 10;
-            y[i] = Math.tanh(x[i]);
-        }
+			x[i] = i + 1 - (n/2);
+			y[i] = sigmoid(x[i] / 10);
+		}
 
         PlotFrame pf = new PlotFrame(800, 600);
-        pf.plot(x, y, Color.red, "Tanh");
+        pf.plot(x, y);
 		pf.view();
+	}
+
+	static double sigmoid(double x) {
+		return 1 / (1 + Math.exp(-x));
+	}
+
+	static double[] linspace(double inicio, double fim, int elementos) {
+		if (elementos < 2) {
+			return new double[]{inicio};
+		}
+
+		double[] result = new double[elementos];
+		double step = (fim - inicio) / (elementos - 1);
+
+		for (int i = 0; i < elementos; i++) {
+			result[i] = inicio + i * step;
+		}
+
+		return result;
 	}
 
     /**
