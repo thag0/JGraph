@@ -1,6 +1,8 @@
 package src;
 
 import jgraph.PlotFrame;
+import jnn.core.Dicionario;
+import jnn.core.tensor.Tensor;
 
 public class Main {
 	
@@ -9,22 +11,29 @@ public class Main {
 	}
 
     public static void main(String[] args) {
-        int n = 200;
+        int n = 100;
         double[] x = new double[n];
         double[] y = new double[n];
 
         for (int i = 0; i < n; i++) {
 			x[i] = i + 1 - (n/2);
-			y[i] = sigmoid(x[i] / 10);
+			double val = x[i] / 10;
+			y[i] = func(val);
 		}
 
         PlotFrame pf = new PlotFrame(800, 600);
         pf.plot(x, y);
+		pf.legenda(true);
 		pf.view();
 	}
 
-	static double sigmoid(double x) {
-		return 1 / (1 + Math.exp(-x));
+	static double func(double x) {
+		Tensor t = new Tensor(new double[] { x });
+		
+		return new Dicionario()
+		 .getAtivacao("sigmoid")
+		 .forward(t)
+		 .item();
 	}
 
 	static double[] linspace(double inicio, double fim, int elementos) {

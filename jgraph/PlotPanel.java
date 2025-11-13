@@ -15,6 +15,7 @@ public class PlotPanel extends JPanel {
     private int margin = 40;
     private Color corTracejado = Color.darkGray;
     private Color corBackground = new Color(180, 180, 180);
+    private boolean mostrarLegenda = false;
 
     private ColorIterator ci = new ColorIterator();
 
@@ -34,6 +35,10 @@ public class PlotPanel extends JPanel {
 
     public void addPlot(double[] x, double[] y) {
         addPlot(x, y, ci.next());
+    }
+
+    public void legend(boolean mostrar) {
+        mostrarLegenda = mostrar;
     }
 
     @Override
@@ -74,11 +79,20 @@ public class PlotPanel extends JPanel {
             g2.drawLine(margin, y0, w - margin, y0);
         }
 
+        // linha X = 0 (vertical)
+        if (minX <= 0 && maxX >= 0) {
+            int x0 = (int) (margin + (0 - minX) / (maxX - minX) * (w - 2 * margin));
+            g2.setColor(corTracejado);
+            BasicStroke stroke = new BasicStroke(1.2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+            g2.setStroke(stroke);
+            g2.drawLine(x0, margin, x0, h - margin);
+        }
+
         for (Serie s : series) {
             drawSerie(g2, s, w, h, minX, maxX, minY, maxY);
         }
 
-        drawLegend(g2);
+        if (mostrarLegenda) drawLegend(g2);
     }
 
     /**

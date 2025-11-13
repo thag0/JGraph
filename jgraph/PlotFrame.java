@@ -33,4 +33,8 @@ public class PlotFrame extends JFrame {
         pp.addPlot(x, y);
     }
 
+    public void legenda(boolean mostrar) {
+        pp.legend(mostrar);
+    }
+
 }

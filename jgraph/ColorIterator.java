@@ -13,7 +13,7 @@ public class ColorIterator {
         Color.magenta
     };
 
-    int id = 0;
+    int id = -1;
 
     public Color next() {
         id++;
