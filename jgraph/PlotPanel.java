@@ -43,6 +43,12 @@ public class PlotPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        if (series.size() < 1) {
+            throw new IllegalStateException(
+                "\nNenhuma série de dados para plotar."
+            );
+        }
+
         super.paintComponent(g);
         if (series.isEmpty()) return;
 
