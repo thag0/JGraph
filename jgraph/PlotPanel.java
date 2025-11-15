@@ -12,10 +12,13 @@ import java.util.ArrayList;
 
 public class PlotPanel extends JPanel {
     private ArrayList<Serie> series = new ArrayList<>();
-    private int margin = 40;
+    private int margin = 50;
     private Color corTracejado = Color.darkGray;
     private Color corBackground = new Color(180, 180, 180);
     private boolean mostrarLegenda = false;
+    
+    private int xTicks = 8;// valor padrão
+    private int yTicks = 8;// valor padrão
 
     private ColorIterator ci = new ColorIterator();
 
@@ -35,6 +38,12 @@ public class PlotPanel extends JPanel {
 
     public void addPlot(double[] x, double[] y) {
         addPlot(x, y, ci.next());
+    }
+
+    public void setXTicks(int ticks) {
+        if (ticks > 1) {
+            xTicks = ticks;
+        }
     }
 
     public void legend(boolean mostrar) {
@@ -73,32 +82,125 @@ public class PlotPanel extends JPanel {
             }
         }
 
-        // desenhar eixos
         drawAxes(g2, w, h);
 
-        // linha Y = 0 (horizontal)
-        if (minY <= 0 && maxY >= 0) {
-            int y0 = (int) (h - margin - (0 - minY) / (maxY - minY) * (h - 2 * margin));
-            g2.setColor(corTracejado);
-            BasicStroke stroke = new BasicStroke(1.2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
-            g2.setStroke(stroke);
-            g2.drawLine(margin, y0, w - margin, y0);
-        }
+        draw0AxisLines(g2, w, h, minX, maxX, minY, maxY);
 
-        // linha X = 0 (vertical)
-        if (minX <= 0 && maxX >= 0) {
-            int x0 = (int) (margin + (0 - minX) / (maxX - minX) * (w - 2 * margin));
-            g2.setColor(corTracejado);
-            BasicStroke stroke = new BasicStroke(1.2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
-            g2.setStroke(stroke);
-            g2.drawLine(x0, margin, x0, h - margin);
-        }
+        drawXTicks(g2, w, h, minX, maxX);
+        drawYTicks(g2, w, h, minY, maxY);
 
         for (Serie s : series) {
             drawSerie(g2, s, w, h, minX, maxX, minY, maxY);
         }
 
         if (mostrarLegenda) drawLegend(g2);
+    }
+
+    private int toPixelX(double x, int w, double minX, double maxX) {
+        return (int) Math.round(
+            margin + (x - minX) / (maxX - minX) * (w - 2 * margin)
+        );
+    }
+
+    private int toPixelY(double y, int h, double minY, double maxY) {
+        return (int) Math.round(
+            h - margin - (y - minY) / (maxY - minY) * (h - 2 * margin)
+        );
+    }
+
+    /**
+     * Desenha linhas tracejadas para séries com valores positivos e negativos.
+     * @param g2
+     * @param w
+     * @param h
+     * @param minX
+     * @param maxX
+     * @param minY
+     * @param maxY
+     */
+    private void draw0AxisLines(Graphics2D g2, int w, int h, double minX, double maxX, double minY, double maxY) {
+        boolean linhaX = minX <= 0 && maxX >= 0;
+        boolean linhaY = minY <= 0 && maxY >= 0;
+
+        g2.setColor(corTracejado);
+        BasicStroke stroke = new BasicStroke(
+            1.2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+            0, new float[]{5}, 0
+        );
+        g2.setStroke(stroke);
+
+        if (linhaX) {
+            int x0 = toPixelX(0, w, minX, maxX);
+            g2.drawLine(x0, margin, x0, h - margin);
+        }
+        if (linhaY) {
+            int y0 = toPixelY(0, h, minY, maxY);
+            g2.drawLine(margin, y0, w - margin, y0);
+        }
+
+        g2.setColor(Color.black);
+        if (linhaX && linhaY) {
+            int x0 = toPixelX(0, w, minX, maxX);
+            int y0 = toPixelY(0, h, minY, maxY);
+            g2.drawString("0", x0 + 5, y0 - 5);
+        
+        } else if (linhaX) {
+            int x0 = toPixelX(0, w, minX, maxX);
+            g2.drawString("0", x0 + 5, h - margin + 15);
+        
+        } else if (linhaY) {
+            int y0 = toPixelY(0, h, minY, maxY);
+            g2.drawString("0", margin + 5, y0 - 5);
+        }
+    }
+
+    /**
+     * Desenha ticks no eixo horizontal.
+     * @param g2
+     * @param w
+     * @param h
+     * @param minX
+     * @param maxX
+     */
+    private void drawXTicks(Graphics2D g2, int w, int h, double minX, double maxX) {
+        double step = (maxX - minX) / xTicks;
+        g2.setColor(Color.BLACK);
+        g2.setStroke(new BasicStroke(1f));
+
+        for (int i = 0; i <= xTicks; i++) {
+            double valor = minX + i * step;
+            int px = toPixelX(valor, w, minX, maxX);
+
+            g2.drawLine(px, h - margin, px, h - margin + 6);//tick
+
+            String label = String.format("%.2f", valor);
+            g2.drawString(label, px - 10, h - margin + 20);
+        }
+    }
+
+    /**
+     * Desenha ticks no eixo vertical.
+     * @param g2
+     * @param w
+     * @param h
+     * @param minY
+     * @param maxY
+     */
+    private void drawYTicks(Graphics2D g2, int w, int h, double minY, double maxY) {
+        double step = (maxY - minY) / yTicks;
+        g2.setColor(Color.BLACK);
+        g2.setStroke(new BasicStroke(1f));
+
+        for (int i = 0; i <= yTicks; i++) {
+            double valor = minY + i * step;
+
+            int py = toPixelY(valor, h, minY, maxY);
+
+            g2.drawLine(margin - 6, py, margin, py);// tick
+
+            String label = String.format("%.2f", valor);
+            g2.drawString(label, margin - 40, py + 5);
+        }
     }
 
     /**

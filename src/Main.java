@@ -11,7 +11,7 @@ public class Main {
 	}
 
     public static void main(String[] args) {
-        int n = 100;
+        int n = 50;
         double[] x = new double[n];
         double[] y = new double[n];
 
@@ -23,7 +23,6 @@ public class Main {
 
         PlotFrame pf = new PlotFrame(800, 600);
         pf.plot(x, y);
-		pf.legenda(true);
 		pf.view();
 	}
 
@@ -31,7 +30,7 @@ public class Main {
 		Tensor t = new Tensor(new double[] { x });
 		
 		return new Dicionario()
-		 .getAtivacao("sigmoid")
+		 .getAtivacao("tanh")
 		 .forward(t)
 		 .item();
 	}

@@ -18,7 +18,7 @@ public class Playground {
         );
         model.compilar("sgd", "mse");
 
-        int epochs = 3 * 1000;
+        int epochs = 1 * 1000;
         model.setHistorico(true);
         model.treinar(train, epochs, true);
         System.out.println("loss: " + model.avaliar(train.getX(), train.getY()));
